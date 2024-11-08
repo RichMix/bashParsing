@@ -36,3 +36,32 @@ Q6: Most Frequent Source IP for Downloads
         grep '"event":20' activity.log | grep -o '"source":"[^"]*"' | sort | uniq -c | sort -nr | head -n 1
 
 These commands should be more accurate by specifically extracting fields based on the JSON-like structure in the log file. Let me know if this approach provides the correct results or if you encounter further issues!
+
+Improved Command for Total Entries
+
+    Q1: Counting Total Entries
+    If each entry is enclosed within {...}, we can count the occurrences of { at the start of each entry as a unique identifier.
+
+grep -c '^{' activity.log
+
+Alternatively, if the log entries are formatted in JSON objects where each entry begins with a specific key (like "user" or "timestamp"), you can count lines that contain that key:
+
+grep -c '"user"' activity.log
+
+Verify with Other Filters
+In cases where entries don't have consistent markers, you may need to check the log format further. If every entry has a unique event identifier like "event":, you can count lines that contain this field:
+
+    grep -c '"event"' activity.log
+
+t looks like the log format for downloads (event 20) uses "srcIp" rather than "source". Additionally, event 200 may relate to network connections rather than downloads, so we'll exclude it from our search.
+
+To find the most frequent IP address for downloads, here’s an updated command:
+Revised Command for Question 6
+
+grep '"event":20' activity.log | grep -o '"srcIp":"[^"]*"' | sort | uniq -c | sort -nr | head -n 1
+
+This command will:
+
+    Filter entries specifically for event 20.
+    Extract IP addresses from the "srcIp" field.
+    Count occurrences and sort to find the most frequent IP.
