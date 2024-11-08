@@ -1,0 +1,34 @@
+To analyze the .pcapng file, you can convert it to a .pcap format if necessary and use tshark or tcpdump to extract details. Here’s how to proceed with each question:
+Steps for Analysis Using tshark (or tcpdump)
+1. Convert .pcapng to .pcap (if needed)
+
+    If tshark or tcpdump has trouble reading .pcapng, convert it using editcap:
+
+    editcap streamn-ncl2024-fall.pcapng streamn-ncl2024-fall.pcap
+
+2. Analyze the Capture to Answer Each Question
+
+    Q1: HTTP Server Address
+        Use tshark to find HTTP requests and identify the server IP address.
+
+    tshark -r streamn-ncl2024-fall.pcap -Y "http.request" -T fields -e ip.dst
+
+    This should list the destination IP (HTTP server address).
+
+Q2: Client Address
+
+    Extract the client IP address by listing the source IP for HTTP requests:
+
+    tshark -r streamn-ncl2024-fall.pcap -Y "http.request" -T fields -e ip.src
+
+Q3: HTTP Server Port
+
+    Identify the destination port for HTTP traffic (usually port 80 but could vary):
+
+    tshark -r streamn-ncl2024-fall.pcap -Y "http.request" -T fields -e tcp.dstport
+
+Q4: HTTP Client User-Agent
+
+    Find the User-Agent field in the HTTP request headers:
+
+    tshark -r streamn-ncl2024-fall.pcap -Y "http.request" -T fields -e http.user_agent
