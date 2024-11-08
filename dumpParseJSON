@@ -1,0 +1,38 @@
+Revised Commands for Accurate Parsing
+
+    Q1: Total Entries in the Log File
+        Count the total number of lines, as each line is likely one log entry:
+
+    wc -l activity.log
+
+Q2: Number of Distinct Calendar Dates
+
+    Assuming the date is embedded within a timestamp field like "timestamp":"2024-04-17T04:00:00.000Z", we can extract the date part from the timestamp:
+
+    grep -o '"timestamp":"[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' activity.log | sort | uniq | wc -l
+
+Q3: Date with the Most Events
+
+    Extract dates from the timestamp field and count occurrences to find the date with the most events:
+
+    grep -o '"timestamp":"[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' activity.log | sort | uniq -c | sort -nr | head -n 1
+
+Q4: User with the Most Entries
+
+    Extract the user field and count occurrences to find the user with the most entries:
+
+    grep -o '"user":"[^"]*"' activity.log | sort | uniq -c | sort -nr | head -n 1
+
+Q5: User with the Most Power Failures
+
+    Filter for "System Shutdown" (code 100) and "System Reboot" (code 110), then extract the user field to find the user with the most power failures:
+
+    grep -E '"event":(100|110)' activity.log | grep -o '"user":"[^"]*"' | sort | uniq -c | sort -nr | head -n 1
+
+Q6: Most Frequent Source IP for Downloads
+
+    Assuming "File Transfer" (event code 20) represents downloads, filter for this event and extract the source IP field:
+
+        grep '"event":20' activity.log | grep -o '"source":"[^"]*"' | sort | uniq -c | sort -nr | head -n 1
+
+These commands should be more accurate by specifically extracting fields based on the JSON-like structure in the log file. Let me know if this approach provides the correct results or if you encounter further issues!
